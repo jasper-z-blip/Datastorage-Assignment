@@ -1,35 +1,38 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Reflection.Metadata;
-
-namespace Data.Entities;
+﻿using Data.Entities;
 
 public class ProjectEntity
 {
-    [Key]
     public int Id { get; set; }
-    public string Title { get; set; } = null!;
-    public string? Description { get; set; }
-
-    [Column(TypeName = "date")]
-    public DateTime StartDate { get; set; }
-
-    [Column(TypeName = "date")]
-    public DateTime EndDate { get; set; }
-
-    [ForeignKey("CustomerId")]
-    public int CustomerId { get; set; }
-    public CustomerEntity Customer { get; set; } = null!;
-
-    [ForeignKey("ProductId")]
-    public int ProductId { get; set; }
-    public ProductEntity Product { get; set; } = null!;
-
-    [ForeignKey("StatusId")]
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public DateOnly StartDate { get; set; }
+    public DateOnly EndDate { get; set; }
     public int StatusId { get; set; }
-    public StatusTypeEntity Status { get; set; } = null!;
 
-    [ForeignKey("UserId")]
+    public StatusTypeEntity Status { get; set; }
+    public int CustomerId { get; set; }
+    public int ProductId { get; set; }
     public int UserId { get; set; }
-    public UserEntity User { get; set; } = null!;   
+
+    private string? _projectNumber;
+    public string ProjectNumber
+    {
+        get
+        {
+            if (_projectNumber == null)
+            {
+                _projectNumber = GenerateProjectNumber();
+            }
+            return _projectNumber;
+        }
+        set => _projectNumber = value;
+    }
+
+    public int TotalPrice { get; set; }
+
+    // Här genererar vi projektnumret baserat på antalet projekt i databasen. Flytta till en Helpers?
+    private string GenerateProjectNumber()
+    {
+        return $"P-{DateTime.UtcNow.Year}-{Guid.NewGuid().ToString().Substring(0, 5)}";
+    }
 }

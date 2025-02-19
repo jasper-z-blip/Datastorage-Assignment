@@ -1,58 +1,53 @@
 ﻿using Data.Contexts;
 using Data.Entities;
+using Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Data.Repositories;
 
-public class ProjectRepository
+public class ProjectRepository : BaseRepository<ProjectEntity>, IProjectRepository
 {
     private readonly DataContext _context;
 
-    public ProjectRepository(DataContext context)
+    public ProjectRepository(DataContext context) : base(context)
     {
         _context = context;
     }
 
-    public async Task<List<ProjectEntity>> GetAllProjectAsync()
+    public async Task<List<ProjectEntity>> GetAllProjectsWithStatusAsync()
     {
-        return await _context.Projects.Include(p => p.Customer).Include(p => p.Status).ToListAsync();
+        return await _context.Projects.Include(p => p.Status).ToListAsync();
     }
 
-    public async Task<ProjectEntity?> GetProjectByIdAsync(int id)
+    public async Task<ProjectEntity?> GetProjectWithStatusAsync(int id)
     {
-        return await _context.Projects.Include(p => p.Customer).Include(p => p.Status).FirstOrDefaultAsync(p => p.Id == id);
+        return await _context.Projects.Include(p => p.Status).FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<ProjectEntity> CreateProjectAsync(ProjectEntity project)
+    public async Task<string> GenerateProjectNumberAsync()
     {
-        Console.WriteLine("Creating project: " + project.Title);
-        _context.Projects.Add(project);
-        await _context.SaveChangesAsync();
-        return project;
+        return $"P-{DateTime.UtcNow.Year}-{Guid.NewGuid().ToString().Substring(0, 4)}";
     }
 
-    public async Task<bool> UpdateProjectAsync(int id, ProjectEntity updatedProject)
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
     {
-        var existingProject = await _context.Projects.FindAsync(id);
-        if (existingProject == null) return false;
-
-        existingProject.Title = updatedProject.Title;
-        existingProject.Description = updatedProject.Description;
-        existingProject.StartDate = updatedProject.StartDate;
-        existingProject.EndDate = updatedProject.EndDate;
-        existingProject.StatusId = updatedProject.StatusId;
-
-        await _context.SaveChangesAsync();
-        return true;
+        return await _context.Database.BeginTransactionAsync();
     }
 
-    public async Task<bool> DeleteProjectAsync(int id)
+    public async Task AddProjectWithTransactionAsync(ProjectEntity project, IDbContextTransaction transaction)
     {
-        var project = await _context.Projects.FindAsync(id);
-        if (project == null) return false;
-
-        _context.Projects.Remove(project);
-        await _context.SaveChangesAsync();
-        return true;
+        try
+        {
+            await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync(); // Här bekräftas transaktionen.
+        }
+        catch
+        {
+            await transaction.RollbackAsync(); // Här sker Rollback vid fel.
+            throw;
+        }
     }
 }
+

@@ -1,8 +1,9 @@
 ﻿using Data.Contexts;
+using Data.Entities;
 
 namespace Data.Repositories;
 
-public class UserRepository(DataContext context)
+public class UserRepository : BaseRepository<UserEntity>
 {
-    private readonly DataContext _context = context;
+    public UserRepository(DataContext context) : base(context) { }
 }

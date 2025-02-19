@@ -1,42 +1,17 @@
 ﻿using Data.Contexts;
 using Data.Entities;
+using Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories;
 
-public class CustomerRepository(DataContext context)
+public class CustomerRepository : BaseRepository<CustomerEntity>, ICustomerRepository
 {
-    private readonly DataContext _context = context;
+    public CustomerRepository(DataContext context) : base(context) { }
 
-    public async Task<IEnumerable<CustomerEntity>> GetAllAsync()
+    public async Task<CustomerEntity?> GetByCompanyNumberAsync(string companyNumber)
     {
-        return await _context.Customers.ToListAsync();
-    }
-
-    public async Task<CustomerEntity?> GetByIdAsync(int id)
-    {
-        return await _context.Customers.FindAsync(id);
-    }
-
-    public async Task AddAsync(CustomerEntity customer)
-    {
-        _context.Customers.Add(customer);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task UpdateAsync (CustomerEntity customer)
-    {
-        _context.Customers.Update(customer);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task DeleteAsync(int id)
-    {
-        var customer = await _context.Customers.FindAsync(id);
-        if (customer != null)
-        {
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-        }
+        return await _context.Customers
+            .FirstOrDefaultAsync(c => c.CompanyNumber == companyNumber);
     }
 }

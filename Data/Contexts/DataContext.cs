@@ -1,5 +1,5 @@
-﻿using Data.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Data.Entities;
 
 namespace Data.Contexts;
 
@@ -10,7 +10,6 @@ public class DataContext : DbContext
     }
 
     public DbSet<CustomerEntity> Customers { get; set; }
-    public DbSet<ProductEntity> Products { get; set; }
     public DbSet<StatusTypeEntity> StatusTypes { get; set; }
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<ProjectEntity> Projects { get; set; }
@@ -20,9 +19,60 @@ public class DataContext : DbContext
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder.UseSqlServer(
-                "Server=(localdb)\\mssqllocaldb;Database=MyDatabaseName;Trusted_Connection=True;",
-                b => b.MigrationsAssembly("Backend.Api"));
+                "Server=(localdb)\\mssqllocaldb;Database=MyDatabaseName;Trusted_Connection=True;"
+            );
         }
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // Hantera DateOnly (sparas som DateTime i SQL Server)
+        modelBuilder.Entity<ProjectEntity>()
+            .Property(p => p.StartDate)
+            .HasConversion(v => v.ToDateTime(TimeOnly.MinValue), v => DateOnly.FromDateTime(v));
+
+        modelBuilder.Entity<ProjectEntity>()
+            .Property(p => p.EndDate)
+            .HasConversion(v => v.ToDateTime(TimeOnly.MinValue), v => DateOnly.FromDateTime(v));
+
+        modelBuilder.Entity<ProjectEntity>()
+            .Property(p => p.ProjectNumber)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        modelBuilder.Entity<ProjectEntity>()
+            .HasIndex(p => p.ProjectNumber)
+            .IsUnique();
+
+        modelBuilder.Entity<StatusTypeEntity>().HasData(
+            new StatusTypeEntity { Id = 1, StatusName = "Ej påbörjat" },
+            new StatusTypeEntity { Id = 2, StatusName = "Pågående" },
+            new StatusTypeEntity { Id = 3, StatusName = "Avslutat" }
+        );
+
+        modelBuilder.Entity<CustomerEntity>().HasData(
+            new CustomerEntity
+            {
+                Id = 1,
+                FirstName = "John",
+                LastName = "Doe",
+                CompanyName = "Testföretag AB",
+                Address = "Stockholm, Sverige",
+                CompanyNumber = "556677-8899"
+            }
+        );
+
+        // ✅ Seed data för Users
+        modelBuilder.Entity<UserEntity>().HasData(
+            new UserEntity { Id = 1, FirstName = "Admin", LastName = "User", Email = "admin@example.com" }
+        );
+
+        modelBuilder.Entity<ProjectEntity>()
+            .Property(p => p.TotalPrice)
+            .HasDefaultValue(0);
+    }
 }
+
 

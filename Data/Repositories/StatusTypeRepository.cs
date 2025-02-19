@@ -1,8 +1,10 @@
 ﻿using Data.Contexts;
+using Data.Entities;
 
 namespace Data.Repositories;
 
-public class StatusTypeRepository(DataContext context)
+public class StatusTypeRepository : BaseRepository<StatusTypeEntity>
 {
-    private readonly DataContext _context = context;
+    public StatusTypeRepository(DataContext context) : base(context) { }
 }
+
