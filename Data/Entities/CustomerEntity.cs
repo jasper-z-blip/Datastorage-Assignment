@@ -6,7 +6,7 @@ namespace Data.Entities;
 public class CustomerEntity
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Gör så att ID genereras automatiskt
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Gör så att ID genereras automatiskt av databasen.
     public int Id { get; set; }
 
     [Required]

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Data.Entities;
 
-namespace Data.Contexts;
+namespace Data.Contexts; //Kommentar till mig själv: DataContext fungerar som planritning för databasen så att EF Core vet hur den ska skapa och hantera databasen.
 
 public class DataContext : DbContext
 {
@@ -42,6 +42,7 @@ public class DataContext : DbContext
             .IsRequired()
             .HasMaxLength(50);
 
+        // Skapar ett unikt vvärde så att inget annat projekt kan få samma nummer.
         modelBuilder.Entity<ProjectEntity>()
             .HasIndex(p => p.ProjectNumber)
             .IsUnique();
@@ -64,7 +65,7 @@ public class DataContext : DbContext
             }
         );
 
-        // ✅ Seed data för Users
+        // Seed data för Users, tanken är att lägga till en user som får ändra i projektet (om jag hinner).
         modelBuilder.Entity<UserEntity>().HasData(
             new UserEntity { Id = 1, FirstName = "Admin", LastName = "User", Email = "admin@example.com" }
         );
@@ -74,5 +75,5 @@ public class DataContext : DbContext
             .HasDefaultValue(0);
     }
 }
-
+// Detta är en mall tagen från chatGPT, jag har ändrat om mycket men sätter förklaringar där jag inte skrivit koden själv.
 

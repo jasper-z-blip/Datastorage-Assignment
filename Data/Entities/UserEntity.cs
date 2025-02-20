@@ -11,4 +11,4 @@ namespace Data.Entities
         public string Email { get; set; } = null!;
     }
 }
-
+// Plan att utöka för att kunna välja användare, vem får ändra vad osv.

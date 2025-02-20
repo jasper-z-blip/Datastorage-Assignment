@@ -21,6 +21,7 @@ public class CustomerController : ControllerBase
     {
         try
         {
+            // Hämtar alla customers från databasen.
             var customers = await _customerService.GetAllCustomersAsync();
             return Ok(customers);
         }

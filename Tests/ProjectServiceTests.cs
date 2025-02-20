@@ -2,15 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using Data.Contexts;
-using Data.Entities;
 using Data.Repositories;
 using Data.Repositories.Interfaces;
 using WebApi.Services;
 using WebApi.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 public class ProjectServiceTests : IDisposable
 {

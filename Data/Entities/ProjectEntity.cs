@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Data.Helpers;
 
 public class ProjectEntity
 {
@@ -21,18 +22,16 @@ public class ProjectEntity
         {
             if (_projectNumber == null)
             {
-                _projectNumber = GenerateProjectNumber();
+                // Anropar metoden för att generera Projektnummer automatiskt.
+                _projectNumber = ProjectNumberGenerator.GenerateProjectNumber(); 
             }
             return _projectNumber;
         }
+        //Värdet är oförändrligt för användaren men kan skrivas över om ett värde redan finns.
         set => _projectNumber = value;
     }
 
-    public int TotalPrice { get; set; }
-
-    // Här genererar vi projektnumret baserat på antalet projekt i databasen. Flytta till en Helpers?
-    private string GenerateProjectNumber()
-    {
-        return $"P-{DateTime.UtcNow.Year}-{Guid.NewGuid().ToString().Substring(0, 5)}";
-    }
+    // Sparar total priset för projektet. Värdet beräknas senare beroende på antal dagar och vilken tjänst.
+    public int TotalPrice { get; set; }   
 }
+// Där jag tagit hjälp av chatGPT, där sätter jag förklaringar, alltså där jag inte skrivit koden själv.
