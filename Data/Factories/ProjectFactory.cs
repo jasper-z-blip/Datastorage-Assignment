@@ -17,7 +17,7 @@ public static class ProjectFactory
             StatusId = statusId,
             UserId = userId,
             ProjectNumber = ProjectNumberGenerator.GenerateProjectNumber(),
-            TotalPrice = 0 // Varför 0? Räknas ut senare.
+            TotalPrice = 0 // Varför 0? Svar: Räknas ut senare.
         };
     }
 }

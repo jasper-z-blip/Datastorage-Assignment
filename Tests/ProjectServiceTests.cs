@@ -16,16 +16,16 @@ public class ProjectServiceTests : IDisposable
 
     public ProjectServiceTests()
     {
-        // Skapa en in-memory SQLite databas
+        // Skapa en in-memory SQLite databas.
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
 
         var options = new DbContextOptionsBuilder<DataContext>()
-            .UseSqlite(_connection) // Använd SQLite för tester
+            .UseSqlite(_connection) // Använd SQLite för tester.
             .Options;
 
         _context = new DataContext(options);
-        _context.Database.EnsureCreated(); // Skapa databasen i minnet
+        _context.Database.EnsureCreated(); // Skapa databasen i minnet.
 
         _projectRepository = new ProjectRepository(_context);
         _projectService = new ProjectService(_projectRepository);
@@ -65,7 +65,7 @@ public class ProjectServiceTests : IDisposable
         var invalidProject = new ProjectEntity
         {
             ProjectNumber = "P-2025-ROLLBACK",
-            Title = null, // Detta kommer att orsaka ett valideringsfel
+            Title = null, // Detta kommer att orsaka ett valideringsfel. Så man kan se att testet för Rollback fungerar. Då det bryter mot kravet att titel är Requiered.
             StartDate = DateOnly.FromDateTime(DateTime.Today),
             EndDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5)),
             ProductId = 1,
@@ -80,15 +80,17 @@ public class ProjectServiceTests : IDisposable
         // Assert
         await action.Should().ThrowAsync<Exception>().Where(e =>
             e is DbUpdateException ||
-            e is InvalidOperationException);  // Kontrollera att rätt exception kastas
+            e is InvalidOperationException);  // Kontrollera att rätt exception kastas.
 
         var projectFromDb = await _context.Projects.FirstOrDefaultAsync(p => p.ProjectNumber == "P-2025-ROLLBACK");
-        projectFromDb.Should().BeNull(); // Projektet ska INTE finnas i databasen eftersom det ska rollbackas
+        projectFromDb.Should().BeNull(); // Projektet ska INTE finnas i databasen eftersom det ska rollbackas.
     }
 
+    // Rensar och stänger Datacontext och SQLite anslutning efter test.
     public void Dispose()
     {
         _context.Dispose();
         _connection.Dispose();
     }
 }
+// Har tagit hjälp av chatGpt med testet så har kommenterat det jag inte skrivit själv/ eller som jag inte skrivit om från chatGPT.

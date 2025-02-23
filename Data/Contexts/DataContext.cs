@@ -19,7 +19,7 @@ public class DataContext : DbContext
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder.UseSqlServer(
-                "Server=(localdb)\\mssqllocaldb;Database=MyDatabaseName;Trusted_Connection=True;"
+                "Server=(localdb)\\mssqllocaldb;Database=MyLocalDB;Trusted_Connection=True;"
             );
         }
     }

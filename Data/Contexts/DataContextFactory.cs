@@ -9,7 +9,7 @@ public class DataContextFactory : IDesignTimeDbContextFactory<DataContext>
     {
         var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
 
-        optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=MyDatabaseName;Trusted_Connection=True;Connect Timeout=30");
+        optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=MyLocalDB;Trusted_Connection=True;Connect Timeout=30");
 
         return new DataContext(optionsBuilder.Options);
     }

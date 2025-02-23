@@ -1,6 +1,5 @@
 ﻿using WebApi.Models;
 using WebApi.Services.Interfaces;
-using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;

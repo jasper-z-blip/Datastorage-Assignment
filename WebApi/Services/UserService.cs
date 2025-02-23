@@ -1,6 +1,5 @@
 ﻿using Data.Entities;
 using Data.Repositories;
-using Data.Entities;
 
 
 namespace WebApi.Services;
@@ -43,3 +42,4 @@ public class UserService
         return true;
     }
 }
+// Har byggt upp och tanken är att införa en USER i applikationen om jag hinner.

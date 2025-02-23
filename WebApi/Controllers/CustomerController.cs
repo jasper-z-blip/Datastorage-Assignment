@@ -42,6 +42,7 @@ public class CustomerController : ControllerBase
 
             return Ok(customer);
         }
+        // Vid oväntat fel så kommer detta felmeddelande skickas tillbaka i console.
         catch (Exception ex)
         {
             return StatusCode(500, $"Ett internt serverfel uppstod: {ex.Message}");
@@ -64,6 +65,7 @@ public class CustomerController : ControllerBase
 
         try
         {
+            // Förslag från chatGPT, för att kunna se vilken kund som skapats genom att se vilket ID kunden fått. Skickar med en länk, tex. /api/customers/2.
             var newCustomer = await _customerService.AddCustomerAsync(customer);
             return CreatedAtAction(nameof(GetCustomerById), new { id = newCustomer.Id }, newCustomer);
         }
@@ -118,3 +120,4 @@ public class CustomerController : ControllerBase
         }
     }
 }
+// Detta är till viss del en mall tagen från chatGPT, jag har ändrat om mycket men sätter förklaringar där jag inte skrivit koden själv.

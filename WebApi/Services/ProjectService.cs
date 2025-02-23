@@ -26,6 +26,7 @@ public class ProjectService : IProjectService
 
     public async Task<ProjectEntity> CreateProjectAsync(ProjectEntity project)
     {
+        // Hjälp av chatGPT, Startar transationen, await using gör att transaktionen stängs korrekt när blocket är klart.
         await using var transaction = await _projectRepository.BeginTransactionAsync();
 
         try
@@ -41,12 +42,14 @@ public class ProjectService : IProjectService
 
             return project;
         }
-        catch (DbUpdateException dbEx)
+        // Om databasspecifikt fel uppstår görs en rollback här.
+        catch (DbUpdateException)
         {
             await transaction.RollbackAsync();
             throw;
         }
         catch (Exception ex)
+        // Om något annat fel uppstår görs en rollback här.
         {
             await transaction.RollbackAsync();
             throw new Exception("Ett fel uppstod vid skapandet av projektet.", ex);
@@ -95,7 +98,7 @@ public class ProjectService : IProjectService
 
     private int GetRateByProductId(int productId)
     {
-        return productId switch
+        return productId switch // Switch för att ev. kuna lägga till fler tjänster senare.
         {
             1 => 4000,  // Junior Developer
             2 => 6000,  // Midlevel Developer
