@@ -1,4 +1,4 @@
-﻿using WebApi.Services;
+﻿using WebApi.Models;
 using WebApi.Services.Interfaces;
 using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +50,7 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddCustomer([FromBody] CustomerEntity customer)
+    public async Task<IActionResult> AddCustomer([FromBody] CreateCustomerModel customer)
     {
         if (customer == null)
             return BadRequest("Kunddata är obligatorisk.");
@@ -65,8 +65,18 @@ public class CustomerController : ControllerBase
 
         try
         {
-            // Förslag från chatGPT, för att kunna se vilken kund som skapats genom att se vilket ID kunden fått. Skickar med en länk, tex. /api/customers/2.
-            var newCustomer = await _customerService.AddCustomerAsync(customer);
+            var customerEntity = new CustomerEntity
+            {
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                CompanyName = customer.CompanyName,
+                Address = customer.Address,
+                CompanyNumber = customer.CompanyNumber
+            };
+
+            // Skickar `CustomerEntity` till databasen.
+            var newCustomer = await _customerService.AddCustomerAsync(customerEntity);
+
             return CreatedAtAction(nameof(GetCustomerById), new { id = newCustomer.Id }, newCustomer);
         }
         catch (Exception ex)
@@ -76,7 +86,7 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCustomer(int id, [FromBody] CustomerEntity updatedCustomer)
+    public async Task<IActionResult> UpdateCustomer(int id, [FromBody] UpdateCustomerModel updatedCustomer)
     {
         if (updatedCustomer == null || id != updatedCustomer.Id)
             return BadRequest("Felaktiga kunduppgifter.");

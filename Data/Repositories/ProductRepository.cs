@@ -1,6 +1,4 @@
 ﻿using Data.Contexts;
-using Data.Entities;
-using Data.Repositories.Interfaces;
 
 namespace Data.Repositories;
 

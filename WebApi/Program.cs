@@ -9,7 +9,6 @@ using Data.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Lägg till DbContext och koppling till SQL Server-databas.
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );

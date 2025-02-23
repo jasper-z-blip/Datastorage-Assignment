@@ -1,6 +1,4 @@
-﻿using Data.Entities;
-
-namespace WebApi.Services.Interfaces;
+﻿namespace WebApi.Services.Interfaces;
 
 public interface IProjectService
 {

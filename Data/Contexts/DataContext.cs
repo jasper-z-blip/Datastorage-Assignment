@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Data.Entities;
 
-namespace Data.Contexts; //Kommentar till mig själv: DataContext fungerar som planritning för databasen så att EF Core vet hur den ska skapa och hantera databasen.
+namespace Data.Contexts;
 
 public class DataContext : DbContext
 {

@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Contexts; //Kommentar till mig själv: Talar om vilken databas och hur DataContext konfigureras. EF Core kan jobba mot databasen och restrerande kod behöver ej köras.
-
+namespace Data.Contexts;
 public class DataContextFactory : IDesignTimeDbContextFactory<DataContext>
 {
     public DataContext CreateDbContext(string[] args)
